@@ -2,18 +2,19 @@
 Syntax: .setflood"""
 
 import asyncio
-
 from pyrogram import (
-    ChatPermissions,
     Client,
-    Filters
+    filters
+)
+from pyrogram.types import (
+    ChatPermissions
 )
 from pyrobot import (
     COMMAND_HAND_LER,
     DB_URI
 )
-
 from pyrobot.helper_functions.admin_check import admin_check
+from pyrobot.helper_functions.cust_p_filters import f_onw_fliter
 if DB_URI is not None:
     import pyrobot.helper_functions.sql_helpers.antiflood_sql as sql
     CHAT_FLOOD = sql.__load_flood_settings()
@@ -68,7 +69,10 @@ because he reached the defined flood limit.
         )
 
 
-@Client.on_message(Filters.command("setflood", COMMAND_HAND_LER))
+@Client.on_message(
+    filters.command("setflood", COMMAND_HAND_LER) & 
+    f_onw_fliter
+)
 async def set_flood(_, message):
     """ /setflood command """
     is_admin = await admin_check(message)
@@ -85,3 +89,23 @@ async def set_flood(_, message):
         )
     except Exception as e:  # pylint:disable=C0103,W0703
         await message.reply_text(str(e))
+
+
+@Client.on_message(
+    filters.command("flood", COMMAND_HAND_LER) &
+    f_onw_fliter
+)
+async def get_flood_settings(_, message):
+    flood_limit = sql.get_flood_limit(message.chat.id)
+    if flood_limit == 0:
+        await message.reply_text(
+            "This chat is not currently enforcing flood control."
+        )
+    else:
+        await message.reply_text(
+            "<b>This chat is</b> currently "
+            "enforcing <i>flood control</i> after "
+            f"<code>{flood_limit}</code> messages. \n"
+            "⚠️⚠️ <u><i>Any users sending more than that amount of messages "
+            "will be muted.</i></u>"
+        )

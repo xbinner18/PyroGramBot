@@ -4,7 +4,7 @@
 
 from pyrogram import Client
 from pyrogram import __version__
-from pyrogram.api.all import layer
+from pyrogram.raw.all import layer
 
 from pyrobot import (
     APP_ID,
@@ -14,7 +14,8 @@ from pyrobot import (
     # OWNER_ID,
     # SUDO_USERS,
     TG_COMPANION_BOT,
-    TMP_DOWNLOAD_DIRECTORY
+    TMP_DOWNLOAD_DIRECTORY,
+    USE_AS_BOT
 )
 
 
@@ -23,9 +24,9 @@ class PyroBot(Client):
     def __init__(self):
         name = self.__class__.__name__.lower()
 
-        if HU_STRING_SESSION is None:
+        if USE_AS_BOT:
             super().__init__(
-                name,
+                ":memory:",
                 plugins=dict(root=f"{name}/plugins"),
                 workdir=TMP_DOWNLOAD_DIRECTORY,
                 api_id=APP_ID,
@@ -34,13 +35,12 @@ class PyroBot(Client):
             )
         else:
             super().__init__(
-                name,
+                HU_STRING_SESSION,
                 plugins=dict(root=f"{name}/plugins"),
                 workdir=TMP_DOWNLOAD_DIRECTORY,
                 api_id=APP_ID,
                 api_hash=API_HASH,
             )
-
 
     async def start(self):
         await super().start()
@@ -53,7 +53,6 @@ class PyroBot(Client):
             "Hi."
         )
 
-
     async def stop(self, *args):
         await super().stop()
-        print("PyroGramBot stopped. Bye.")
+        LOGGER.info("PyroGramBot stopped. Bye.")

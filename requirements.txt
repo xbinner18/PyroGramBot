@@ -1,26 +1,33 @@
-https://github.com/pyrogram/pyrogram/archive/asyncio-dev.zip
+pyrogram
 tgcrypto
 
 asyncio
 aiohttp
 
+# scrapping tools [not used anywhere]
 beautifulsoup4
 emoji
 
+# Heroku /update R
 gitpython
 heroku3
 
+# Image manipulation Tools
 hachoir
 Pillow
 
+# SQL DataBase ReQuirements
 psycopg2-binary
 sqlalchemy
 
+# leech tools
 youtube-dl
 aria2p
 
+# download remote files
 pySmartDL
 
+# Google Drive ReQuirements
 google-api-python-client
 google-auth-httplib2
 google-auth-oauthlib
