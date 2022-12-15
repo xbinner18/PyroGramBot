@@ -31,18 +31,14 @@ async def paste_bin(_, message):
         m_list = None
         with open(downloaded_file_name_res, "rb") as fd:
             m_list = fd.readlines()
-        downloaded_file_name = ""
-        for m in m_list:
-            downloaded_file_name += m.decode("UTF-8")
+        downloaded_file_name = "".join(m.decode("UTF-8") for m in m_list)
         os.remove(downloaded_file_name_res)
     elif message.reply_to_message:
         downloaded_file_name = message.reply_to_message.text.html
-    # elif len(message.command) > 1:
-    #     downloaded_file_name = " ".join(message.command[1:])
     else:
         await status_message.edit("എന്ത് ചെയ്യണം എന്ന് പറഞ്ഞില്ല")
         return
-    
+
     if downloaded_file_name is None:
         await status_message.edit("എന്ത് ചെയ്യണം എന്ന് പറഞ്ഞില്ല")
         return
@@ -57,31 +53,29 @@ async def paste_bin(_, message):
         "nekobin": "https://nekobin.com/api/documents"
     }
 
-    chosen_store = "nekobin"
-    if len(message.command) == 2:
-        chosen_store = message.command[1]
-    
+    chosen_store = message.command[1] if len(message.command) == 2 else "nekobin"
     # get the required pastebin URI
     paste_store_url = paste_bin_store_s.get(chosen_store, paste_bin_store_s["nekobin"])
     paste_store_base_url_rp = urlparse(paste_store_url)
 
     # the pastebin sites, respond with only the "key"
     # we need to prepend the BASE_URL of the appropriate site
-    paste_store_base_url = paste_store_base_url_rp.scheme + "://" + \
-        paste_store_base_url_rp.netloc
-    
+    paste_store_base_url = (
+        f"{paste_store_base_url_rp.scheme}://{paste_store_base_url_rp.netloc}"
+    )
+
     async with aiohttp.ClientSession() as session:
         response_d = await session.post(paste_store_url, json=json_paste_data)
         response_jn = await response_d.json()
-    
+
     # we got the response from a specific site,
     # this dictionary needs to be scrapped
     # using bleck megick to find the "key"
     t_w_attempt = bleck_megick(response_jn)
     required_url = json.dumps(t_w_attempt, sort_keys=True, indent=4) + "\n\n #ERROR"
     if t_w_attempt is not None:
-        required_url = paste_store_base_url + "/" + "raw" + "/" + t_w_attempt
-    
+        required_url = f"{paste_store_base_url}/raw/{t_w_attempt}"
+
     await status_message.edit(required_url)
 
 

@@ -119,8 +119,7 @@ async def updater(client, message):
             # possibly, ignore premium Heroku users
             heroku_app = heroku_applications[0]
             heroku_git_url = heroku_app.git_url.replace(
-                "https://",
-                "https://api:" + HEROKU_API_KEY + "@"
+                "https://", f"https://api:{HEROKU_API_KEY}@"
             )
             if "heroku" in repo.remotes:
                 remote = repo.remote("heroku")

@@ -18,7 +18,7 @@ class Notes(BASE):
         self.d_message_id = d_message_id
 
     def __repr__(self):
-        return "<Note %s>" % self.name
+        return f"<Note {self.name}>"
 
 
 Notes.__table__.create(checkfirst=True)
@@ -28,8 +28,7 @@ NOTES_INSERTION_LOCK = threading.RLock()
 
 def add_note_to_db(chat_id, note_name, note_message_id):
     with NOTES_INSERTION_LOCK:
-        prev = SESSION.query(Notes).get((str(chat_id), note_name))
-        if prev:
+        if prev := SESSION.query(Notes).get((str(chat_id), note_name)):
             SESSION.delete(prev)
         note = Notes(str(chat_id), note_name, note_message_id)
         SESSION.add(note)
@@ -45,8 +44,7 @@ def get_note(chat_id, note_name):
 
 def rm_note(chat_id, note_name):
     with NOTES_INSERTION_LOCK:
-        note = SESSION.query(Notes).get((str(chat_id), note_name))
-        if note:
+        if note := SESSION.query(Notes).get((str(chat_id), note_name)):
             SESSION.delete(note)
             SESSION.commit()
             return True

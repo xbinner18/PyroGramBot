@@ -40,7 +40,7 @@ async def load_plugin(client: Client, message: Message):
                 # LOGGER.info(module_path)
                 module = reload(import_module(module_path))
                 # https://git.io/JvlNL
-                for name in vars(module).keys():
+                for name in vars(module):
                     # noinspection PyBroadException
                     try:
                         handler, group = getattr(module, name).handler
@@ -48,13 +48,7 @@ async def load_plugin(client: Client, message: Message):
                         if isinstance(handler, Handler) and isinstance(group, int):
                             client.add_handler(handler, group)
                             LOGGER.info(
-                                '[{}] [LOAD] {}("{}") in group {} from "{}"'.format(
-                                    client.session_name,
-                                    type(handler).__name__,
-                                    name,
-                                    group,
-                                    module_path
-                                )
+                                f'[{client.session_name}] [LOAD] {type(handler).__name__}("{name}") in group {group} from "{module_path}"'
                             )
 
                             lded_count += 1

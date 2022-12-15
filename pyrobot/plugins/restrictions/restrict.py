@@ -51,8 +51,8 @@ async def temp_mute_user(_, message):
     is_admin = await admin_check(message)
     if not is_admin:
         return
-    
-    if not len(message.command) > 1:
+
+    if len(message.command) <= 1:
         return
 
     user_id, user_first_name = extract_user(message)
@@ -60,9 +60,7 @@ async def temp_mute_user(_, message):
     until_date_val = extract_time(message.command[1])
     if until_date_val is None:
         await message.reply_text(
-            "അസാധുവായ സമയ തരം വ്യക്തമാക്കി. പ്രതീക്ഷിച്ചതു m, h, or d, കിട്ടിയത്: {}".format(
-                message.command[1][-1]
-            )
+            f"അസാധുവായ സമയ തരം വ്യക്തമാക്കി. പ്രതീക്ഷിച്ചതു m, h, or d, കിട്ടിയത്: {message.command[1][-1]}"
         )
         return
 
