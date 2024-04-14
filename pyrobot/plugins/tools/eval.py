@@ -48,14 +48,11 @@ async def eval(client, message):
     else:
         evaluation = "Success"
 
-    final_output = "<b>EVAL</b>: <code>{}</code>\n\n<b>OUTPUT</b>:\n<code>{}</code> \n".format(
-        cmd,
-        evaluation.strip()
-    )
+    final_output = f"<b>EVAL</b>: <code>{cmd}</code>\n\n<b>OUTPUT</b>:\n<code>{evaluation.strip()}</code> \n"
 
     if len(final_output) > MAX_MESSAGE_LENGTH:
         with open("eval.text", "w+", encoding="utf8") as out_file:
-            out_file.write(str(final_output))
+            out_file.write(final_output)
         await message.reply_document(
             document="eval.text",
             caption=cmd,
@@ -70,7 +67,9 @@ async def eval(client, message):
 
 async def aexec(code, client, message):
     exec(
-        f'async def __aexec(client, message): ' +
-        ''.join(f'\n {l}' for l in code.split('\n'))
+        (
+            'async def __aexec(client, message): '
+            + ''.join(f'\n {l}' for l in code.split('\n'))
+        )
     )
     return await locals()['__aexec'](client, message)

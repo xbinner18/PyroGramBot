@@ -44,8 +44,7 @@ async def youtube_dl_call_back(bot, update, cb_data):
             revoke=True
         )
         return
-    save_ytdl_json_path = user_working_dir + \
-        "/" + str("ytdleech") + ".json"
+    save_ytdl_json_path = f"{user_working_dir}/ytdleech.json"
     try:
         with open(save_ytdl_json_path, "r", encoding="utf8") as f_d:
             response_json = json.load(f_d)
@@ -77,8 +76,8 @@ async def youtube_dl_call_back(bot, update, cb_data):
     )
     description = "@PyroGramBot"
     if "fulltitle" in response_json:
-        description = response_json["fulltitle"][0:1021]
-        # escape Markdown and special characters
+        description = response_json["fulltitle"][:1021]
+            # escape Markdown and special characters
     #
     tmp_directory_for_each_user = os.path.join(
         TMP_DOWNLOAD_DIRECTORY,
@@ -113,7 +112,7 @@ async def youtube_dl_call_back(bot, update, cb_data):
                     acodec = for_mat.get("acodec")
                     vcodec = for_mat.get("vcodec")
                     if acodec == "none" or vcodec == "none":
-                        minus_f_format = youtube_dl_format + "+bestaudio"
+                        minus_f_format = f"{youtube_dl_format}+bestaudio"
                     break
         command_to_exec = [
             "youtube-dl",
@@ -124,16 +123,12 @@ async def youtube_dl_call_back(bot, update, cb_data):
             "-o", download_directory,
             # "--external-downloader", "aria2c"
         ]
-    #
-    command_to_exec.append("--no-warnings")
-    # command_to_exec.append("--quiet")
-    command_to_exec.append("--restrict-filenames")
+    command_to_exec.extend(("--no-warnings", "--restrict-filenames"))
     #
     if "hotstar" in youtube_dl_url:
-        command_to_exec.append("--geo-bypass-country")
-        command_to_exec.append("IN")
+        command_to_exec.extend(("--geo-bypass-country", "IN"))
     LOGGER.info(command_to_exec)
-    start = datetime.now()    
+    start = datetime.now()
     t_response, e_response = await run_command(command_to_exec)
     # LOGGER.info(e_response)
     # LOGGER.info(t_response)

@@ -12,9 +12,7 @@ from pyrobot import (
 
 
 def f_sudo_filter(filt, client, message):
-    return bool(
-        message.from_user.id in SUDO_USERS
-    )
+    return message.from_user.id in SUDO_USERS
 
 
 sudo_filter = filters.create(
@@ -24,9 +22,7 @@ sudo_filter = filters.create(
 
 def onw_filter(filt, client, message):
     if USE_AS_BOT:
-        return bool(
-            message.from_user.id in SUDO_USERS
-        )
+        return message.from_user.id in SUDO_USERS
     else:
         return bool(
             message.from_user and 

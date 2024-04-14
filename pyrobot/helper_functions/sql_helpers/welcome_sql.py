@@ -57,8 +57,7 @@ def add_welcome_setting(
 
 
 def rm_welcome_setting(chat_id):
-    rem = SESSION.query(Welcome).get(chat_id)
-    if rem:
+    if rem := SESSION.query(Welcome).get(chat_id):
         SESSION.delete(rem)
         SESSION.commit()
 

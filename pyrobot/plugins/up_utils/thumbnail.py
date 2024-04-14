@@ -31,7 +31,7 @@ async def save_thumb_nail(client, message):
         if not os.path.isdir(TMP_DOWNLOAD_DIRECTORY):
             os.makedirs(TMP_DOWNLOAD_DIRECTORY)
         start_t = datetime.now()
-        download_location = TMP_DOWNLOAD_DIRECTORY + "/"
+        download_location = f"{TMP_DOWNLOAD_DIRECTORY}/"
         c_time = time.time()
         downloaded_file_name = await client.download_media(
             message=message.reply_to_message,
@@ -45,9 +45,7 @@ async def save_thumb_nail(client, message):
         # https://stackoverflow.com/a/21669827/4723940
         Image.open(downloaded_file_name).convert("RGB").save(downloaded_file_name)
         metadata = extractMetadata(createParser(downloaded_file_name))
-        height = 0
-        if metadata.has("height"):
-            height = metadata.get("height")
+        height = metadata.get("height") if metadata.has("height") else 0
         # resize image
         # ref: https://t.me/PyrogramChat/44663
         img = Image.open(downloaded_file_name)

@@ -7,7 +7,7 @@ from pyrogram.types import Message
 async def admin_check(message: Message) -> bool:
     if not message.from_user:
         return False
-    
+
     if message.chat.type not in ["supergroup", "channel"]:
         return False
 
@@ -24,7 +24,4 @@ async def admin_check(message: Message) -> bool:
         "administrator"
     ]
     # https://git.colinshark.de/PyroBot/PyroBot/src/branch/master/pyrobot/modules/admin.py#L69
-    if check_status.status not in admin_strings:
-        return False
-    else:
-        return True
+    return check_status.status in admin_strings

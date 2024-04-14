@@ -43,11 +43,11 @@ async def list_note(_, message):
 
     note_list = sql.get_all_chat_notes(message.chat.id)
 
-    msg = "<b>Notes in {}:</b>\n".format("the current chat")
+    msg = f"<b>Notes in the current chat:</b>\n"
     msg_p = msg
 
     for note in note_list:
-        note_name = " - {}\n".format(note.name)
+        note_name = f" - {note.name}\n"
         if len(msg) + len(note_name) > MAX_MESSAGE_LENGTH:
             await message.reply_text(msg)
             msg = ""

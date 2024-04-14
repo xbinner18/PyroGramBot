@@ -47,8 +47,7 @@ async def who_is(client, message):
                 chat_member_p.joined_date or time.time()
             ).strftime("%Y.%m.%d %H:%M:%S")
             message_out_str += f"<b>Joined On</b>: <code>{joined_date}</code>\n"
-        chat_photo = from_user.photo
-        if chat_photo:
+        if chat_photo := from_user.photo:
             local_user_photo = await client.download_media(
                 message=chat_photo.big_file_id
             )

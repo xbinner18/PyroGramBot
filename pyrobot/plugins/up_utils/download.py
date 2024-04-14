@@ -30,7 +30,7 @@ async def down_load_media(client, sms):
         os.makedirs(TMP_DOWNLOAD_DIRECTORY)
     if sms.reply_to_message is not None:
         start_t = datetime.now()
-        download_location = TMP_DOWNLOAD_DIRECTORY + "/"
+        download_location = f"{TMP_DOWNLOAD_DIRECTORY}/"
         c_time = time.time()
         the_real_download_location = await client.download_media(
             message=sms.reply_to_message,
@@ -57,7 +57,7 @@ async def down_load_media(client, sms):
         downloader.start(blocking=False)
         c_time = time.time()
         while not downloader.isFinished():
-            total_length = downloader.filesize if downloader.filesize else None
+            total_length = downloader.filesize or None
             downloaded = downloader.get_dl_size()
             display_message = ""
             now = time.time()
@@ -66,9 +66,10 @@ async def down_load_media(client, sms):
             speed = downloader.get_speed()
             elapsed_time = round(diff) * 1000
             progress_str = "[{0}{1}]\nProgress: {2}%".format(
-                ''.join(["█" for i in range(math.floor(percentage / 5))]),
-                ''.join(["░" for i in range(20 - math.floor(percentage / 5))]),
-                round(percentage, 2))
+                ''.join(["█" for _ in range(math.floor(percentage / 5))]),
+                ''.join(["░" for _ in range(20 - math.floor(percentage / 5))]),
+                round(percentage, 2),
+            )
             estimated_total_time = downloader.get_eta(human=True)
             try:
                 current_message = f"trying to download\n"
@@ -86,7 +87,6 @@ async def down_load_media(client, sms):
                     await asyncio.sleep(10)
             except Exception as e:
                 LOGGER.info(str(e))
-                pass
         if os.path.exists(download_file_path):
             end_t = datetime.now()
             ms = (end_t - start_t).seconds
